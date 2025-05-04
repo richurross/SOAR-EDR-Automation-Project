@@ -246,8 +246,6 @@ To finish this up, let's grab our isolation status and send this over to Slack. 
 ![Image](https://github.com/user-attachments/assets/46ef86a5-3bd8-48cf-8e10-d070943b08e0)
 
 Finally, we'll add a final Slack element for it to send us an automated alert to investigate our machine after isolation. Run our test and we should see our desired message.
-![Image](https://github.com/user-attachments/assets/882df9df-8825-466d-9f59-01f50ff4eb70)
-
 ![Image](https://github.com/user-attachments/assets/2cb51915-7f69-4296-af68-e3ad2f368be8)
 ***
 
