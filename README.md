@@ -145,6 +145,10 @@ In Slack, right-click the #alerts channel -> View Channel Details > Copy Channel
 
 Paste the Channel ID into Tines.
 
+# Tines Workflow Build
+
+We can finally get started on building our diagram workflow. In Tines, grab the Webhook Detections action as well as Slack. We'll connect them together to build the logic flow.
+
 Now, build the detection message using important fields from Retrieve Detections.<br>
 ![Image](https://github.com/user-attachments/assets/cf359135-1c09-48fc-b07a-0976f5fe90f1)
 ![Image](https://github.com/user-attachments/assets/d4050347-f76f-48bc-9bc0-857f977073aa)
@@ -152,9 +156,100 @@ Now, build the detection message using important fields from Retrieve Detections
 Click Run to send a test message to Slack. Confirm the message appears in Slack.
 ![Image](https://github.com/user-attachments/assets/c30eb8a5-e94a-4f08-b526-4ec432e7efad)
 
-Great! 
+Great! Now that we've confirmed the conection between Tines & Slack, let's also try sending email notifications. For our emails, I'll be using a disposable public email service through [SquareX](https://public.sqrx.com/web/). 
+![Image](https://github.com/user-attachments/assets/e9124afc-ad09-4304-9382-b242f2c7a351)
 
+In Tines, we'll add an action to the playbook by dragging over the "Send Email" action. We'll input our disposable email we've gotten from SquareX as the recipient. Then we'll test to see if we can properly receive the email. <br>
+![Image](https://github.com/user-attachments/assets/88e0a8c7-06d4-4dd5-bbf3-7f371a6520be)
+![Image](https://github.com/user-attachments/assets/2aa8319c-466c-4613-bf98-571aa8642699)
+***
 
-# Tines Workflow Build
+Awesome, we've confirmed the Tines & Slack connection, as well as test emails. Now we can configure our automated messages to list out our incident information. Let's refer to our intended information fields from our initial flow diagram. We can find these subject fields when going into our detection events in Tines, expanding Retrieve Detections -> Body -> Detect -> Event. Once we've located all our interested fields, we'll copy the path and paste into a notepad for reference.
+![Image](https://github.com/user-attachments/assets/938ab4d3-207d-40ac-a64d-37fd6616a433)
 
+After grabbing those paths, as long as we have an event detection retrieved within our playbook, we should be able to receive our desired information via Slack/email. If there is no detections at this point in Tines, I suggest that you rerun LaZagne.exe on this project's machine to detect an event. For our automations to trigger, Select Run -> Retrieve Detections -> Test.
+![Image](https://github.com/user-attachments/assets/9f58b0b7-11c1-4947-8563-f0754c60ea08)
 
+Let's grab our subject fields and their corresponding paths from earlier and paste them into the message fields of our Slack/email actions. In Slack, our alerts channel should look like the picture below, same with our email.
+![Image](https://github.com/user-attachments/assets/b7a13faa-bc88-4a89-8e00-be12df9f61f0)
+
+![Image](https://github.com/user-attachments/assets/3b4b19bb-7543-4b75-8245-95e59b829b2e)
+
+![Image](https://github.com/user-attachments/assets/f23017ba-2e7f-43eb-b081-508ba59d7c71)
+
+Sweet! We've gotten our desired incident information. Although our email formatting is a bit off. To fix this, I realized that the email is sent in HTML. So in Tines, select our "Send Email" action, under Body, find "Open HTML Editor." Here, we'll add break lines <br> to tidy up the formatting for our email.
+![Image](https://github.com/user-attachments/assets/5006bb11-0fcd-4548-b135-7223535f7e79)
+***
+
+Onto our user prompt portion of the project, this is the webpage our analyst would visit in the event that they decide to isolate the machine based upon the information given regarding the incident(s). To find our user prompt in Tines, select tools, add a new page. Then Provide a Name, Description, and Success Message users will be seeing. 
+![Image](https://github.com/user-attachments/assets/dd280f4d-edac-46a9-ad00-173a66edf647)
+
+Let's find a Boolean under Page Elements that we can add into our user prompt. This will allow our analysts to isolate the affected machine. In addition, we'll edit our user prompt and input our detection subject fields from before. <br>
+![Image](https://github.com/user-attachments/assets/9c62e277-8cfc-4bc7-ba4a-5774326c32e4)
+
+![Image](https://github.com/user-attachments/assets/447f299d-fe8b-44ca-96b6-6f6c8c9f743a)
+
+Awesome, our user prompt shows our information now.<br>
+![Image](https://github.com/user-attachments/assets/a472e7c5-4db1-45d8-a0c6-a00e65d1c0d1)
+***
+
+Moving on, we can build upon our boolean responses and what Tines will do in the event of our Yes/No confirmation.
+
+Starting off with No, let's select our Trigger tool, drag it onto our playbook, and name the tool "No." <br>
+![Image](https://github.com/user-attachments/assets/c897aac5-458e-449a-9af5-b2629322f2af)
+
+![Image](https://github.com/user-attachments/assets/5d99454b-72c1-4e97-85ac-99fbfc89a2d1)
+
+Underneath that, we will add Slack and add the path "retrieve_detections.body.detect.routing.hostname." This path will simply grab the hostname of the affected machine and autofill it within our alert message. <br>
+![Image](https://github.com/user-attachments/assets/251ba015-76bd-4cda-aa10-5499f3970846)
+
+![Image](https://github.com/user-attachments/assets/7fe5dfca-7a5d-49ad-b3bb-335b00fabd93)
+
+Let's try testing out our flow. We'll visit the User prompt page, click No. We should get a message from Slack asking us to investigate the machine.
+![Image](https://github.com/user-attachments/assets/9a06dcd6-99a3-49b1-85f0-d61f030f89e5)
+
+Sick, we've finished that half of our user prompt actions. Onto our Yes prompt, we'll grab a Trigger action again and name our fields. <br>
+![Image](https://github.com/user-attachments/assets/9ee31cbc-0d4e-42d9-8300-4d7090154f61)
+
+![Image](https://github.com/user-attachments/assets/289fef09-d8d0-4db1-86fb-af722c9a2105)
+
+Instead of immediately connecting to Slack here, we'll add a LimaCharlie element. Select templates, type in LimaCharlie, and search for Isolate Sensor. We'll name it, and select URL -> Add value "retrieve_detections.body.routing.sid." SID standing for our sensor ID from LimaCharlie. <br>
+ ![Image](https://github.com/user-attachments/assets/b9fa6c04-4e24-41a5-8153-4e5339f30ca5)
+
+![Image](https://github.com/user-attachments/assets/cb21d343-b4ca-441f-bf2d-f646b7fc5978)
+
+![Image](https://github.com/user-attachments/assets/fc2de532-8aa7-49d0-9cea-683577d66ade)
+
+This is a tricky point in the project between to connect back this feature to LimaCharlie, we'll need the correct Credentials again similar to how we added one for Slack. When testing out our automation, if I did not configure a LimaCharlie credential, I received these error logs.
+![Image](https://github.com/user-attachments/assets/0c863e26-ca4d-419c-b398-2f1df32956e7)
+
+![Image](https://github.com/user-attachments/assets/57ed9f7a-67ee-4fd7-b297-f9e7186d1d6c)
+
+So to fix this, we'll refer to the LimaCharlie documentaion for API authentication information.
+![Image](https://github.com/user-attachments/assets/9b2ff483-0251-43ab-9da2-39e4a2082589)
+
+Back in Tines, navtigate to Your Teams -> Credentials -> +New -> JWT. Then we'll name this credential LimaCharlie and add in our JWT value from LimaCharlie. This can be found back in the LimaCharlie dashboard -> Access Management -> REST API.
+![Image](https://github.com/user-attachments/assets/2a19acdf-cc2c-46db-9b4f-6f941b1b3e76)
+
+![Image](https://github.com/user-attachments/assets/f0668829-7087-40c1-95aa-5f8033d93894)
+
+![Image](https://github.com/user-attachments/assets/b5a58ae5-a71d-4bf2-8742-ad5c90bfeabc)
+
+Now that I added a new LimaCharlie credential, I'll make sure to replace it under Headers-> Bearer within my "Isolate Sensor" playbook element.
+![Image](https://github.com/user-attachments/assets/26c60ae7-e505-4d4f-8cbc-35185b2d3cbb)
+
+At this point, I ran another test and selected "Yes" as my user prompt response. As soon as I select, my machine should be isolated from any network access and I should receive alerts via Slack/email about its isolation status.
+![Image](https://github.com/user-attachments/assets/b0265a1e-cba2-4dd8-b4be-a80ce28d3165)
+Alright!!
+
+To finish this up, let's grab our isolation status and send this over to Slack. Again, select templates, type in LimaCharlie, and search for Get Isolation Status. Make sure our credentials are set to the correct LimaCharlie configuration. 
+![Image](https://github.com/user-attachments/assets/46ef86a5-3bd8-48cf-8e10-d070943b08e0)
+
+Finally, we'll add a final Slack element for it to send us an automated alert to investigate our machine after isolation. Run our test and we should see our desired message.
+![Image](https://github.com/user-attachments/assets/882df9df-8825-466d-9f59-01f50ff4eb70)
+
+![Image](https://github.com/user-attachments/assets/2cb51915-7f69-4296-af68-e3ad2f368be8)
+***
+
+Overall, here is our playbook looks in Tines.
+![Image](https://github.com/user-attachments/assets/a78086ea-c817-4172-a06b-e18607733610)
