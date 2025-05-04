@@ -240,6 +240,8 @@ Now that I added a new LimaCharlie credential, I'll make sure to replace it unde
 
 At this point, I ran another test and selected "Yes" as my user prompt response. As soon as I select, my machine should be isolated from any network access and I should receive alerts via Slack/email about its isolation status.
 ![Image](https://github.com/user-attachments/assets/b0265a1e-cba2-4dd8-b4be-a80ce28d3165)
+
+![Image](https://github.com/user-attachments/assets/39c511dd-a604-4944-8410-3263aaaec94e)
 Alright!!
 
 To finish this up, let's grab our isolation status and send this over to Slack. Again, select templates, type in LimaCharlie, and search for Get Isolation Status. Make sure our credentials are set to the correct LimaCharlie configuration. 
